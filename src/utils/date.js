@@ -1,5 +1,17 @@
 const dayMs = 24 * 60 * 60 * 1000;
 
+function pad2(value) {
+  return String(value).padStart(2, '0');
+}
+
+// 按用户本地时区取年月日，避免 toISOString() 在 UTC 偏移为正的时区（如国内 UTC+8）
+// 清晨时段返回前一天。不传参数时即本地当天。
+export function formatLocalDate(value = new Date()) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
+}
+
 export function toDate(value) {
   if (!value) return null;
   const date = value instanceof Date ? value : new Date(`${value}T00:00:00`);
@@ -9,7 +21,7 @@ export function toDate(value) {
 export function toInputDate(value) {
   const date = toDate(value);
   if (!date) return '';
-  return date.toISOString().slice(0, 10);
+  return formatLocalDate(date);
 }
 
 export function addMonths(value, months) {
