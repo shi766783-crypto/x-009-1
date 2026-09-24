@@ -1,5 +1,23 @@
 const dayMs = 24 * 60 * 60 * 1000;
 
+function pad2(value) {
+  return String(value).padStart(2, '0');
+}
+
+export function toLocalDateInput(value = new Date()) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return [
+    date.getFullYear(),
+    pad2(date.getMonth() + 1),
+    pad2(date.getDate())
+  ].join('-');
+}
+
+export function getTodayDateInput() {
+  return toLocalDateInput(new Date());
+}
+
 export function toDate(value) {
   if (!value) return null;
   const date = value instanceof Date ? value : new Date(`${value}T00:00:00`);
@@ -9,7 +27,7 @@ export function toDate(value) {
 export function toInputDate(value) {
   const date = toDate(value);
   if (!date) return '';
-  return date.toISOString().slice(0, 10);
+  return toLocalDateInput(date);
 }
 
 export function addMonths(value, months) {
